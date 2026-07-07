@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ShowMeWhere.App/ShowMeWhere.App.csproj" />
+    <Project Path="src/ShowMeWhere.Core/ShowMeWhere.Core.csproj" />
+    <Project Path="src/ShowMeWhere.Infrastructure/ShowMeWhere.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ShowMeWhere.Core.Tests/ShowMeWhere.Core.Tests.csproj" />
+  </Folder>
+</Solution>

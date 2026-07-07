@@ -1,0 +1,265 @@
+:root {
+  font-family: 'Segoe UI', 'Avenir Next', sans-serif;
+  color: #ebf1ff;
+  background:
+    radial-gradient(circle at top left, rgba(43, 102, 163, 0.45), transparent 30%),
+    radial-gradient(circle at top right, rgba(223, 166, 96, 0.18), transparent 26%),
+    linear-gradient(180deg, #08111d 0%, #0d1828 45%, #13233a 100%);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 160ms ease, opacity 160ms ease, box-shadow 160ms ease;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+button:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+#app {
+  min-height: 100vh;
+}
+
+.app-shell {
+  width: min(1180px, 100% - 28px);
+  margin: 0 auto;
+  padding: 20px 0 32px;
+}
+
+.hero-card,
+.panel {
+  background: rgba(7, 16, 28, 0.78);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(188, 213, 255, 0.14);
+  border-radius: 26px;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
+}
+
+.hero-card {
+  padding: 24px;
+  margin-bottom: 18px;
+}
+
+.hero-card h1,
+.panel h2 {
+  margin: 0;
+}
+
+.hero-card h1 {
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 0.95;
+  letter-spacing: -0.06em;
+  max-width: 12ch;
+}
+
+.hero-copy,
+.status,
+.placeholder,
+.return-stack p,
+.notes-list {
+  color: rgba(235, 241, 255, 0.76);
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: #f5c981;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+}
+
+.hero-actions,
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.hero-actions {
+  margin: 22px 0 14px;
+}
+
+.primary,
+.secondary {
+  padding: 12px 18px;
+}
+
+.primary {
+  background: linear-gradient(135deg, #7bd6ff 0%, #5b9fff 100%);
+  color: #06111d;
+  font-weight: 700;
+}
+
+.secondary {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ebf1ff;
+  border: 1px solid rgba(235, 241, 255, 0.14);
+}
+
+.wide {
+  width: 100%;
+}
+
+.grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.lower-grid {
+  margin-top: 18px;
+  grid-template-columns: 1.5fr 1fr;
+}
+
+.panel {
+  padding: 20px;
+}
+
+.panel-header {
+  margin-bottom: 16px;
+}
+
+.metric-stack,
+.sensor-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.metric-card,
+.saved-card,
+.sensor-grid div {
+  border-radius: 18px;
+  padding: 14px;
+}
+
+.metric-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metric-card strong,
+.saved-card strong,
+.sensor-grid strong {
+  font-size: 1.3rem;
+}
+
+.accent-blue {
+  background: linear-gradient(135deg, rgba(91, 159, 255, 0.28), rgba(52, 103, 184, 0.2));
+}
+
+.accent-sand {
+  background: linear-gradient(135deg, rgba(245, 201, 129, 0.22), rgba(158, 99, 32, 0.18));
+}
+
+.accent-green {
+  background: linear-gradient(135deg, rgba(111, 215, 177, 0.22), rgba(38, 109, 90, 0.18));
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.field span,
+.metric-card span,
+.saved-card span,
+.sensor-grid span {
+  color: rgba(235, 241, 255, 0.72);
+  font-size: 0.85rem;
+}
+
+.field input {
+  width: 100%;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #ebf1ff;
+  border: 1px solid rgba(235, 241, 255, 0.16);
+  border-radius: 16px;
+}
+
+.saved-card {
+  margin-top: 16px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+  display: grid;
+  gap: 6px;
+}
+
+.saved-card small {
+  color: rgba(235, 241, 255, 0.58);
+}
+
+.tag {
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+.tag-ok {
+  background: rgba(111, 215, 177, 0.16);
+  color: #9ce9cc;
+}
+
+.tag-warn {
+  background: rgba(245, 201, 129, 0.14);
+  color: #ffd99a;
+}
+
+.sensor-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sensor-grid div {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(235, 241, 255, 0.08);
+}
+
+.notes-list {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 10px;
+}
+
+@media (max-width: 900px) {
+  .grid,
+  .lower-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-card h1 {
+    max-width: 100%;
+  }
+
+  .app-shell {
+    width: min(100% - 18px, 1180px);
+    padding-top: 12px;
+  }
+}
