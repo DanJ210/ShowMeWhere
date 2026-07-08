@@ -7,4 +7,5 @@ public sealed record SensorSnapshot(
 	double? Pressure,
 	double? BluetoothNoiseFloor,
 	MagneticVector? MagneticField,
-	double? CompassHeading);
+	double? CompassHeading,
+	AccelerometerVector? AccelerometerGravity);

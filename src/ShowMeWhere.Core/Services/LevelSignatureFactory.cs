@@ -23,6 +23,7 @@ public sealed class LevelSignatureFactory : ILevelSignatureFactory
 			.ToArray();
 
 		var magneticField = snapshot.MagneticField;
+		var acc = snapshot.AccelerometerGravity;
 		var canonicalPayload = JsonSerializer.Serialize(new
 		{
 			Wifi = wifi,
@@ -31,7 +32,11 @@ public sealed class LevelSignatureFactory : ILevelSignatureFactory
 			BtNoise = Round(snapshot.BluetoothNoiseFloor),
 			MagX = Round(magneticField?.X),
 			MagY = Round(magneticField?.Y),
-			MagZ = Round(magneticField?.Z)
+			MagZ = Round(magneticField?.Z),
+			Compass = Round(snapshot.CompassHeading),
+			AccX = Round(acc?.X),
+			AccY = Round(acc?.Y),
+			AccZ = Round(acc?.Z)
 		});
 
 		var hash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(canonicalPayload))).ToLowerInvariant();
@@ -45,6 +50,10 @@ public sealed class LevelSignatureFactory : ILevelSignatureFactory
 			Round(magneticField?.X),
 			Round(magneticField?.Y),
 			Round(magneticField?.Z),
+			Round(snapshot.CompassHeading),
+			Round(acc?.X),
+			Round(acc?.Y),
+			Round(acc?.Z),
 			snapshot.CapturedAt);
 	}
 

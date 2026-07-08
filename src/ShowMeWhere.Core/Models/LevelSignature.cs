@@ -9,4 +9,8 @@ public sealed record LevelSignature(
 	double? MagX,
 	double? MagY,
 	double? MagZ,
+	double? Compass,
+	double? AccX,
+	double? AccY,
+	double? AccZ,
 	DateTimeOffset CreatedAt);

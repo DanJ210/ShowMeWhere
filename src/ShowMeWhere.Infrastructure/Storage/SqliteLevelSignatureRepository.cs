@@ -39,8 +39,10 @@ public sealed class SqliteLevelSignatureRepository : ILevelSignatureRepository
 			BtNoise = signature.BtNoise,
 			MagX = signature.MagX,
 			MagY = signature.MagY,
-			MagZ = signature.MagZ,
-			CreatedAtUnixTimeSeconds = signature.CreatedAt.ToUnixTimeSeconds()
+			MagZ = signature.MagZ,				Compass = signature.Compass,
+				AccX = signature.AccX,
+				AccY = signature.AccY,
+				AccZ = signature.AccZ,			CreatedAtUnixTimeSeconds = signature.CreatedAt.ToUnixTimeSeconds()
 		});
 	}
 
@@ -55,6 +57,10 @@ public sealed class SqliteLevelSignatureRepository : ILevelSignatureRepository
 			entity.MagX,
 			entity.MagY,
 			entity.MagZ,
+			entity.Compass,
+			entity.AccX,
+			entity.AccY,
+			entity.AccZ,
 			DateTimeOffset.FromUnixTimeSeconds(entity.CreatedAtUnixTimeSeconds));
 	}
 }

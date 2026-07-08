@@ -31,6 +31,11 @@ public sealed class LevelSimilarityService : ILevelSimilarityService
 		AppendScalar(vectorA, vectorB, NormalizeMagnetic(left.MagX), NormalizeMagnetic(right.MagX));
 		AppendScalar(vectorA, vectorB, NormalizeMagnetic(left.MagY), NormalizeMagnetic(right.MagY));
 		AppendScalar(vectorA, vectorB, NormalizeMagnetic(left.MagZ), NormalizeMagnetic(right.MagZ));
+		AppendScalar(vectorA, vectorB, CompassSin(left.Compass), CompassSin(right.Compass));
+		AppendScalar(vectorA, vectorB, CompassCos(left.Compass), CompassCos(right.Compass));
+		AppendScalar(vectorA, vectorB, NormalizeAcceleration(left.AccX), NormalizeAcceleration(right.AccX));
+		AppendScalar(vectorA, vectorB, NormalizeAcceleration(left.AccY), NormalizeAcceleration(right.AccY));
+		AppendScalar(vectorA, vectorB, NormalizeAcceleration(left.AccZ), NormalizeAcceleration(right.AccZ));
 
 		return CosineSimilarity(vectorA, vectorB);
 	}
@@ -93,6 +98,21 @@ public sealed class LevelSimilarityService : ILevelSimilarityService
 	private static double NormalizeMagnetic(double? value)
 	{
 		return value is null ? 0d : Math.Clamp(value.Value / 100d, -1d, 1d);
+	}
+
+	private static double CompassSin(double? degrees)
+	{
+		return degrees is null ? 0d : Math.Sin(degrees.Value * Math.PI / 180d);
+	}
+
+	private static double CompassCos(double? degrees)
+	{
+		return degrees is null ? 0d : Math.Cos(degrees.Value * Math.PI / 180d);
+	}
+
+	private static double NormalizeAcceleration(double? value)
+	{
+		return value is null ? 0d : Math.Clamp(value.Value, -1d, 1d);
 	}
 
 	private static double NormalizeNoise(double? value)

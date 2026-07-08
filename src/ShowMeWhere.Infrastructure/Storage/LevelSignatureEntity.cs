@@ -13,5 +13,9 @@ public sealed class LevelSignatureEntity
 	public double? MagX { get; set; }
 	public double? MagY { get; set; }
 	public double? MagZ { get; set; }
+	public double? Compass { get; set; }
+	public double? AccX { get; set; }
+	public double? AccY { get; set; }
+	public double? AccZ { get; set; }
 	public long CreatedAtUnixTimeSeconds { get; set; }
 }

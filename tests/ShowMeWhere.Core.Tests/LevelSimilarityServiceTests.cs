@@ -61,6 +61,76 @@ public sealed class LevelSimilarityServiceTests
 		Assert.InRange(score, 0.0, 0.6);
 	}
 
+	[Fact]
+	public void Compare_ReturnsHighScore_WhenAccelerometerAndCompassMatch()
+	{
+		var left = CreateSignature(
+			"a",
+			[],
+			[],
+			1009.2,
+			-72,
+			13,
+			-7,
+			41,
+			compass: 182.4,
+			accX: 0.03,
+			accY: -0.01,
+			accZ: 0.99);
+		var right = CreateSignature(
+			"b",
+			[],
+			[],
+			1009.2,
+			-72,
+			13,
+			-7,
+			41,
+			compass: 182.6,
+			accX: 0.03,
+			accY: -0.01,
+			accZ: 0.99);
+
+		var score = _service.Compare(left, right);
+
+		Assert.InRange(score, 0.99, 1.0);
+	}
+
+	[Fact]
+	public void Compare_ReturnsLowerScore_WhenCompassDiffers()
+	{
+		var left = CreateSignature(
+			"a",
+			[],
+			[],
+			1009.2,
+			-72,
+			13,
+			-7,
+			41,
+			compass: 0.0,
+			accX: 0.0,
+			accY: 0.0,
+			accZ: 1.0);
+		var right = CreateSignature(
+			"b",
+			[],
+			[],
+			1009.2,
+			-72,
+			13,
+			-7,
+			41,
+			compass: 180.0,
+			accX: 0.0,
+			accY: 0.0,
+			accZ: 1.0);
+
+		var score = _service.Compare(left, right);
+
+		Assert.InRange(score, 0.0, 0.99);
+	}
+
 	private static LevelSignature CreateSignature(
 		string id,
 		IReadOnlyList<WifiNetworkReading> wifi,
@@ -69,7 +139,11 @@ public sealed class LevelSimilarityServiceTests
 		double btNoise,
 		double magX,
 		double magY,
-		double magZ)
+		double magZ,
+		double? compass = null,
+		double? accX = null,
+		double? accY = null,
+		double? accZ = null)
 	{
 		return new LevelSignature(
 			id,
@@ -80,6 +154,10 @@ public sealed class LevelSimilarityServiceTests
 			magX,
 			magY,
 			magZ,
+			compass,
+			accX,
+			accY,
+			accZ,
 			DateTimeOffset.UtcNow);
 	}
 }
