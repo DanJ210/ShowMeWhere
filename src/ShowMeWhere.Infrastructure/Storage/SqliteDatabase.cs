@@ -31,8 +31,10 @@ public sealed class SqliteDatabase
 			DatabasePath,
 			SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create | SQLiteOpenFlags.SharedCache);
 
-		await connection.MigrateAsync<LevelSignatureEntity>();
-		await connection.MigrateAsync<ParkingRecordEntity>();
+		// CreateTableAsync with CreateFlags.None will create table if it doesn't exist,
+		// and safely ignore the request if it does (allowing schema evolution via migrations)
+		await connection.CreateTableAsync<LevelSignatureEntity>(CreateFlags.None);
+		await connection.CreateTableAsync<ParkingRecordEntity>(CreateFlags.None);
 		return connection;
 	}
 }

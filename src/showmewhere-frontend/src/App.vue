@@ -192,6 +192,12 @@ onMounted(async () => {
               {{ lastSnapshot.MagneticField ? `${lastSnapshot.MagneticField.X.toFixed(1)}, ${lastSnapshot.MagneticField.Y.toFixed(1)}, ${lastSnapshot.MagneticField.Z.toFixed(1)}` : 'n/a' }}
             </strong>
           </div>
+          <div>
+            <span>Accelerometer</span>
+            <strong>
+              {{ lastSnapshot.AccelerometerGravity ? `${lastSnapshot.AccelerometerGravity.X.toFixed(2)}, ${lastSnapshot.AccelerometerGravity.Y.toFixed(2)}, ${lastSnapshot.AccelerometerGravity.Z.toFixed(2)}` : 'n/a' }}
+            </strong>
+          </div>
         </div>
         <p v-else class="placeholder">Capture a snapshot to inspect raw sensor inputs.</p>
       </article>

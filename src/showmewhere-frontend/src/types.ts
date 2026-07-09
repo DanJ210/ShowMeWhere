@@ -20,6 +20,12 @@ export interface MagneticVector {
   Z: number
 }
 
+export interface AccelerometerVector {
+  X: number
+  Y: number
+  Z: number
+}
+
 export interface SensorSnapshot {
   CapturedAt: string
   WifiNetworks: WifiNetworkReading[]
@@ -28,6 +34,7 @@ export interface SensorSnapshot {
   BluetoothNoiseFloor: number | null
   MagneticField: MagneticVector | null
   CompassHeading: number | null
+  AccelerometerGravity: AccelerometerVector | null
 }
 
 export interface LevelSignature {
@@ -39,6 +46,10 @@ export interface LevelSignature {
   MagX: number | null
   MagY: number | null
   MagZ: number | null
+  Compass: number | null
+  AccX: number | null
+  AccY: number | null
+  AccZ: number | null
   CreatedAt: string
 }
 
