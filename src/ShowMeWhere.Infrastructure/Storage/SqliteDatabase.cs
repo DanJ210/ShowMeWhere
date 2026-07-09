@@ -31,8 +31,8 @@ public sealed class SqliteDatabase
 			DatabasePath,
 			SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create | SQLiteOpenFlags.SharedCache);
 
-		await connection.CreateTableAsync<LevelSignatureEntity>();
-		await connection.CreateTableAsync<ParkingRecordEntity>();
+		await connection.MigrateAsync<LevelSignatureEntity>();
+		await connection.MigrateAsync<ParkingRecordEntity>();
 		return connection;
 	}
 }
