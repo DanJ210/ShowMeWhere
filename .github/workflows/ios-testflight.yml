@@ -1,0 +1,109 @@
+name: iOS TestFlight
+
+on:
+  workflow_dispatch:
+    inputs:
+      upload_to_testflight:
+        description: Upload build to TestFlight
+        required: true
+        default: true
+        type: boolean
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+
+    env:
+      DOTNET_VERSION: 10.0.x
+      NODE_VERSION: 20
+      APP_PROJECT: src/ShowMeWhere.App/ShowMeWhere.App.csproj
+      FRONTEND_DIR: src/showmewhere-frontend
+      CONFIGURATION: Release
+      FRAMEWORK: net10.0-ios
+      RUNTIME_IDENTIFIER: ios-arm64
+      APPSTORE_API_KEY_PATH: /tmp/AuthKey.p8
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: ${{ env.FRONTEND_DIR }}/package-lock.json
+
+      - name: Install MAUI workload
+        run: dotnet workload install maui
+
+      - name: Restore
+        run: dotnet restore ShowMeWhere.slnx
+
+      - name: Import Apple certificate
+        uses: apple-actions/import-codesign-certs@v3
+        with:
+          p12-file-base64: ${{ secrets.IOS_CERTIFICATE_P12_BASE64 }}
+          p12-password: ${{ secrets.IOS_CERTIFICATE_P12_PASSWORD }}
+
+      - name: Install provisioning profile
+        shell: bash
+        run: |
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision
+
+      - name: Publish signed iOS app
+        run: |
+          dotnet publish $APP_PROJECT \
+            -f $FRAMEWORK \
+            -c $CONFIGURATION \
+            -p:RuntimeIdentifier=$RUNTIME_IDENTIFIER \
+            -p:ArchiveOnBuild=true \
+            -p:CodesignKey="${{ secrets.IOS_CODESIGN_KEY }}" \
+            -p:CodesignProvision="${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}"
+
+      - name: Locate IPA
+        id: locate_ipa
+        shell: bash
+        run: |
+          set -euo pipefail
+          IPA_PATH=$(find src/ShowMeWhere.App/bin/Release/net10.0-ios -name "*.ipa" -type f | head -n 1)
+          if [ -z "$IPA_PATH" ]; then
+            echo "No IPA found under expected output folders."
+            exit 1
+          fi
+          echo "ipa_path=$IPA_PATH" >> "$GITHUB_OUTPUT"
+          echo "Found IPA: $IPA_PATH"
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa
+          path: ${{ steps.locate_ipa.outputs.ipa_path }}
+
+      - name: Prepare App Store Connect API key
+        if: ${{ github.event_name == 'push' || inputs.upload_to_testflight }}
+        shell: bash
+        run: |
+          echo "${{ secrets.APPSTORE_CONNECT_API_KEY_BASE64 }}" | base64 --decode > "$APPSTORE_API_KEY_PATH"
+
+      - name: Upload to TestFlight
+        if: ${{ github.event_name == 'push' || inputs.upload_to_testflight }}
+        shell: bash
+        run: |
+          xcrun altool --upload-app \
+            --type ios \
+            --file "${{ steps.locate_ipa.outputs.ipa_path }}" \
+            --apiKey "${{ secrets.APPSTORE_CONNECT_KEY_ID }}" \
+            --apiIssuer "${{ secrets.APPSTORE_CONNECT_ISSUER_ID }}"

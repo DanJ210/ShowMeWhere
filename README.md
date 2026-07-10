@@ -196,9 +196,9 @@ ShowMeWhere/
 # Output: APK file (~30 MB) ready for distribution
 ```
 
-### iOS (Mac Required)
-- Build on Mac with Xcode
-- Or use GitHub Actions for cloud builds
+### iOS (No Physical Mac Required)
+- Use the GitHub Actions workflow for macOS cloud builds and TestFlight upload
+- See [CI/CD Setup](./CICD_SETUP.md) for secrets and trigger instructions
 
 ### Windows Desktop
 - Build executable for distribution
