@@ -278,4 +278,67 @@ A: App tells you which sensors are unavailable. You'll see fewer dimensions → 
 
 ---
 
-**Ready to try it? Tap "Save Level" next time you park!** 🚗
+## 🚀 Future Enhancements & Alternative Approaches
+
+### **Option 1: Core Location (GPS) Complement for iOS**
+
+**Current State:** Fingerprinting-based (accelerometer + compass + barometer)
+
+**Alternative:** Add optional GPS positioning as supplement:
+
+```
+User enables "Location Services" permission
+↓
+App gets GPS coordinates (±5-10 meters accuracy)
+↓
+Combines with sensor fingerprinting
+↓
+Result: 95%+ accuracy on iOS (matching Android)
+```
+
+**Pros:**
+- ✅ Apple-approved (standard iOS Location framework)
+- ✅ No special entitlements needed
+- ✅ High accuracy (GPS + sensors combined)
+- ✅ Works anywhere (includes outdoor parking)
+
+**Cons:**
+- ⚠️ Requires user's explicit "Location" permission
+- ⚠️ Battery usage higher (GPS polling)
+- ⚠️ May not work in deep indoor garages
+
+**Implementation Effort:** Medium (add `CLLocationManager` bridge, update `ILocationReader` interface, modify detection algorithm)
+
+**When to Implement:** If user feedback indicates iOS accuracy is insufficient
+
+---
+
+### **Option 2: Request Apple Entitlements (Not Recommended)**
+
+**What:** Request `com.apple.developer.networking.wifi-info` entitlement for Wi-Fi SSID access
+
+**Why We Haven't:**
+- ❌ Low approval rate (Apple sees it as location privacy risk)
+- ❌ Requires strong justification; "parking level detection" doesn't qualify
+- ❌ Delays App Store review (weeks of back-and-forth)
+- ❌ Reputational risk (looks like trying to bypass privacy controls)
+
+**When to Consider:** If GPS option fails and accuracy becomes critical business requirement
+
+---
+
+### **Option 3: Hybrid Approach (Recommended Path)**
+
+**Phase 1 (Current):** Sensor fingerprinting + optional GPS on iOS
+- Low battery impact
+- Fully Apple-approved
+- 95%+ accuracy when combined
+
+**Phase 2 (Future):** Cloud sync + ML model fine-tuning
+- Learn user patterns over time
+- Better predictions on edge cases
+- Share anonymized data for global parking maps
+
+---
+
+**Current Recommendation:** Stick with fingerprinting for now. Add Core Location option if users request better iOS accuracy.
