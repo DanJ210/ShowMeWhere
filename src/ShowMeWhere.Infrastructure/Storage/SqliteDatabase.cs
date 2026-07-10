@@ -35,6 +35,7 @@ public sealed class SqliteDatabase
 		// and safely ignore the request if it does (allowing schema evolution via migrations)
 		await connection.CreateTableAsync<LevelSignatureEntity>(CreateFlags.None);
 		await connection.CreateTableAsync<ParkingRecordEntity>(CreateFlags.None);
+		await connection.CreateTableAsync<LastDetectionEntity>(CreateFlags.None);
 		return connection;
 	}
 }

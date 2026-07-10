@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { bridge } from './bridge'
-import type { AppBootstrap, DetectionResult, ParkingRecord, SensorSnapshot } from './types'
+import type { AppBootstrap, DetectionResult, LastDetection, ParkingRecord, SensorSnapshot } from './types'
 
 const bootstrap = ref<AppBootstrap | null>(null)
 const currentRecord = ref<ParkingRecord | null>(null)
 const lastDetection = ref<DetectionResult | null>(null)
+const lastDetectedLevel = ref<LastDetection | null>(null)
 const lastSnapshot = ref<SensorSnapshot | null>(null)
 const levelName = ref('P3')
 const isBusy = ref(false)
@@ -22,6 +23,7 @@ const supportedCapabilities = computed(() =>
 async function refreshBootstrap() {
   bootstrap.value = await bridge.getAppBootstrap()
   currentRecord.value = bootstrap.value.CurrentParkingRecord
+  lastDetectedLevel.value = bootstrap.value.LastDetectedLevel
 }
 
 async function captureSnapshot() {
@@ -44,6 +46,21 @@ async function detectLevel() {
     status.value = lastDetection.value.IsKnownLevel
       ? `Predicted ${lastDetection.value.PredictedLevelName} at ${(lastDetection.value.SimilarityScore * 100).toFixed(1)}% confidence.`
       : 'No confident match yet. Save this level to teach the model.'
+    // Refresh to get the updated last detected level
+    await refreshBootstrap()
+  } finally {
+    isBusy.value = false
+  }
+}
+
+async function refreshLastDetection() {
+  isBusy.value = true
+  status.value = 'Re-detecting your current parking level...'
+  try {
+    await detectLevel()
+    status.value = lastDetection.value?.IsKnownLevel
+      ? `You're on ${lastDetection.value.PredictedLevelName} (${(lastDetection.value.SimilarityScore * 100).toFixed(1)}% confidence)`
+      : 'Could not confirm your current level. Try detecting again.'
   } finally {
     isBusy.value = false
   }
@@ -144,6 +161,14 @@ onMounted(async () => {
           <h2>Return to Car</h2>
         </div>
         <div class="return-stack">
+          <div v-if="lastDetectedLevel" class="metric-card accent-purple">
+            <span>Last Detected Level</span>
+            <strong>{{ lastDetectedLevel.LevelName }}</strong>
+            <small>{{ (lastDetectedLevel.Confidence * 100).toFixed(0) }}% confidence · {{ new Date(lastDetectedLevel.Timestamp).toLocaleString() }}</small>
+          </div>
+          <p v-else class="placeholder">No level detected yet.</p>
+          <button class="primary wide" :disabled="isBusy" @click="refreshLastDetection">🔄 Where's My Car?</button>
+          <hr class="spacer" />
           <p>
             {{ currentRecord ? `Head back to ${currentRecord.LevelName}.` : 'No saved spot yet.' }}
           </p>

@@ -69,8 +69,15 @@ export interface ParkingRecord {
   Timestamp: string
 }
 
+export interface LastDetection {
+  LevelName: string
+  Confidence: number
+  Timestamp: string
+}
+
 export interface AppBootstrap {
   Capabilities: SensorModuleAvailability[]
   CurrentParkingRecord: ParkingRecord | null
+  LastDetectedLevel: LastDetection | null
   Timestamp: string
 }

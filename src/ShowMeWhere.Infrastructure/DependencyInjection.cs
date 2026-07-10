@@ -12,6 +12,7 @@ public static class DependencyInjection
 		services.AddSingleton(new SqliteDatabase(databasePath));
 		services.AddSingleton<ILevelSignatureRepository, SqliteLevelSignatureRepository>();
 		services.AddSingleton<IParkingRecordRepository, SqliteParkingRecordRepository>();
+		services.AddSingleton<ILastDetectionRepository, SqliteLastDetectionRepository>();
 		services.AddSingleton<ICloudSyncService, NoOpCloudSyncService>();
 		return services;
 	}

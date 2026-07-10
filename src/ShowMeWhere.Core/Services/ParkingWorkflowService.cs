@@ -10,6 +10,7 @@ public sealed class ParkingWorkflowService : IParkingWorkflowService
 	private readonly ILevelDetectionService _levelDetectionService;
 	private readonly ILevelSignatureRepository _levelSignatureRepository;
 	private readonly IParkingRecordRepository _parkingRecordRepository;
+	private readonly ILastDetectionRepository _lastDetectionRepository;
 	private readonly ISensorSnapshotService _sensorSnapshotService;
 
 	public ParkingWorkflowService(
@@ -17,20 +18,23 @@ public sealed class ParkingWorkflowService : IParkingWorkflowService
 		ICloudSyncService cloudSyncService,
 		ILevelDetectionService levelDetectionService,
 		ILevelSignatureRepository levelSignatureRepository,
-		IParkingRecordRepository parkingRecordRepository)
+		IParkingRecordRepository parkingRecordRepository,
+		ILastDetectionRepository lastDetectionRepository)
 	{
 		_sensorSnapshotService = sensorSnapshotService;
 		_cloudSyncService = cloudSyncService;
 		_levelDetectionService = levelDetectionService;
 		_levelSignatureRepository = levelSignatureRepository;
 		_parkingRecordRepository = parkingRecordRepository;
+		_lastDetectionRepository = lastDetectionRepository;
 	}
 
 	public async Task<AppBootstrap> GetBootstrapAsync(CancellationToken cancellationToken)
 	{
 		var capabilities = await _sensorSnapshotService.GetCapabilitiesAsync(cancellationToken);
 		var currentRecord = await _parkingRecordRepository.GetCurrentAsync(cancellationToken);
-		return new AppBootstrap(capabilities, currentRecord, DateTimeOffset.UtcNow);
+		var lastDetection = await _lastDetectionRepository.GetLatestAsync(cancellationToken);
+		return new AppBootstrap(capabilities, currentRecord, lastDetection, DateTimeOffset.UtcNow);
 	}
 
 	public Task<SensorSnapshot> CaptureSnapshotAsync(CancellationToken cancellationToken)

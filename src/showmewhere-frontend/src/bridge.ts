@@ -19,6 +19,7 @@ const mockBootstrap: AppBootstrap = {
     { Name: 'Compass', IsAvailable: true, Detail: 'Compass available.' },
   ],
   CurrentParkingRecord: null,
+  LastDetectedLevel: null,
   Timestamp: new Date().toISOString(),
 }
 

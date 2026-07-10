@@ -10,17 +10,20 @@ public sealed class LevelDetectionService : ILevelDetectionService
 	private readonly ILevelSignatureRepository _levelSignatureRepository;
 	private readonly ILevelSimilarityService _levelSimilarityService;
 	private readonly IParkingRecordRepository _parkingRecordRepository;
+	private readonly ILastDetectionRepository _lastDetectionRepository;
 
 	public LevelDetectionService(
 		ILevelSignatureFactory levelSignatureFactory,
 		ILevelSignatureRepository levelSignatureRepository,
 		ILevelSimilarityService levelSimilarityService,
-		IParkingRecordRepository parkingRecordRepository)
+		IParkingRecordRepository parkingRecordRepository,
+		ILastDetectionRepository lastDetectionRepository)
 	{
 		_levelSignatureFactory = levelSignatureFactory;
 		_levelSignatureRepository = levelSignatureRepository;
 		_levelSimilarityService = levelSimilarityService;
 		_parkingRecordRepository = parkingRecordRepository;
+		_lastDetectionRepository = lastDetectionRepository;
 	}
 
 	public async Task<DetectionResult> DetectAsync(SensorSnapshot snapshot, CancellationToken cancellationToken)
@@ -49,6 +52,16 @@ public sealed class LevelDetectionService : ILevelDetectionService
 		var isKnownLevel = bestMatch is not null
 			&& bestScore >= DetectionThreshold
 			&& levelBySignatureId.TryGetValue(bestMatch.Id, out _);
+
+		// Save this as the last detected level
+		if (isKnownLevel)
+		{
+			var lastDetection = new LastDetection(
+				levelBySignatureId[bestMatch!.Id],
+				bestScore,
+				DateTimeOffset.UtcNow);
+			await _lastDetectionRepository.SaveAsync(lastDetection, cancellationToken);
+		}
 
 		return new DetectionResult(
 			snapshot,
