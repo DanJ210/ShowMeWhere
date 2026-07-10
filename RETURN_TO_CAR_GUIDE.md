@@ -4,6 +4,10 @@ The **Return to Car** feature uses sensor fingerprinting to help you find your p
 
 ## 📋 How It Works
 
+**Primary Goal:** Identify which **parking LEVEL/FLOOR** you're on (P1, P2, P3, B1, B2, etc.)
+
+**Not:** Pinpoint your exact spot number within a level
+
 ShowMeWhere learns the unique "fingerprint" of each parking level by combining:
 - Accelerometer readings (gravity in X, Y, Z)
 - Compass heading (angle)
@@ -12,7 +16,7 @@ ShowMeWhere learns the unique "fingerprint" of each parking level by combining:
 - Bluetooth & Wi-Fi signal patterns
 - Cellular tower signals
 
-When you need to find your car, the app compares your **current location** against all **saved fingerprints** using cosine similarity to find the best match.
+When you need to find your car, the app compares your **current sensor readings** against all **saved level fingerprints** using cosine similarity to identify which floor you're on.
 
 ---
 
@@ -128,8 +132,8 @@ The **Similarity Score** tells you how confident the app is:
 ## 💡 Use Cases
 
 ### **Case 1: Single Garage (Daily Commute)**
-- Save once in the morning: "Level 3"
-- Return multiple times during the day
+- Save once: "Level 3"
+- Return later to find car → app says "You're on Level 3"
 - App learns the fingerprint → higher accuracy each time
 
 ### **Case 2: Multiple Garages (Shopping)**
@@ -137,10 +141,12 @@ The **Similarity Score** tells you how confident the app is:
 - Save "Airport P3" when you park at Airport
 - Later, Detect Level distinguishes between them automatically
 
-### **Case 3: Multiple Spots (Parking Lot)**
-- Save "South Lot Spot 47"
-- Save "North Lot Spot 12"
-- When returning, app finds the specific spot you chose
+### **Case 3: Different Levels Same Garage**
+- Save "P1" on Level 1
+- Save "P2" on Level 2
+- Detect Level tells you which floor you're on (not which spot)
+
+**Note:** App doesn't track individual spots within a level (that's GPS's job). It identifies which level/floor you're on using environmental fingerprinting.
 
 ---
 
@@ -170,17 +176,31 @@ The **Similarity Score** tells you how confident the app is:
 
 For best "Return to Car" accuracy, you need:
 
-| Sensor | Why | Status |
-|--------|-----|--------|
-| Accelerometer | Detects orientation/tilt of floor | ✅ Always works |
-| Compass | Detects magnetic field variations | ✅ Always works |
-| Barometer | Measures air pressure (different floors) | ✅ Most devices |
-| Magnetometer | Detects metal/reinforcement patterns | ✅ Most devices |
-| Bluetooth | Detects ambient BLE signals | ⚠️ iOS restricted |
-| Wi-Fi | Detects SSID/signal strength | ⚠️ iOS restricted |
-| Cellular | Detects tower proximity | ⚠️ iOS/Android restricted |
+| Sensor | Android | iOS | Why Restricted on iOS |
+|--------|---------|-----|----------------------|
+| Accelerometer | ✅ Full | ✅ Full | Motion only (no privacy risk) |
+| Compass | ✅ Full | ✅ Full | Direction only (no privacy risk) |
+| Barometer | ✅ Full | ✅ Full | Pressure only (no privacy risk) |
+| Magnetometer | ✅ Full | ✅ Full | Magnetic field (no privacy risk) |
+| **Wi-Fi SSID/RSSI** | ✅ Full | ❌ **No Access** | Apple blocks location tracking |
+| **Cellular Towers** | ✅ Full | ❌ **No Access** | Apple blocks location tracking |
+| **Bluetooth RSSI** | ✅ Full | ⚠️ Limited | Apple restricts device tracking |
 
-**On iOS:** Wi-Fi and cellular access is restricted (Apple policy). The app uses accelerometer + compass + barometer instead → still works, just with fewer dimensions.
+### **Why iOS Restrictions?**
+
+🔒 **Apple's Privacy Model:**
+- Wi-Fi SSID scanning = Could identify "I'm at Starbucks, 5th Ave"
+- Cellular triangulation = Could pinpoint your location
+- Bluetooth scanning = Could identify nearby people/devices
+- Apple restricts these to prevent covert location tracking
+
+**Special entitlements exist** but require:
+- App Store justification (rarely approved)
+- User's explicit understanding
+- Strict compliance with App Store guidelines
+
+**Result:** iOS uses only **motion + environmental sensors** (accel + compass + barometer + magnetometer)
+→ Still works, just with **fewer dimensions** → ~80-85% accuracy instead of 95%
 
 ---
 

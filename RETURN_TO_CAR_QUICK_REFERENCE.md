@@ -1,4 +1,4 @@
-# 🚗 Return to Car - Quick Reference Card
+# 🚗 Return to Car - Quick Reference Card\n\n**Primary Goal:** Identify which **parking LEVEL/FLOOR** you're on (not exact spot)\n\n```\nExample outcomes:\n✅ \"You're on Level P3\"\n❌ \"You're on spot P3-47\" (not this)\n```
 
 ## The Three Tabs
 

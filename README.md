@@ -4,12 +4,14 @@ A cross-platform MAUI + Vue hybrid application for detecting and remembering par
 
 ## 🎯 Overview
 
-ShowMeWhere uses advanced sensor data (accelerometer, compass, barometer, magnetic field, Wi-Fi/cellular signals) to create unique fingerprints for each parking level. The app learns locations and can identify them with high confidence using cosine similarity matching.
+ShowMeWhere uses advanced sensor data (accelerometer, compass, barometer, magnetic field, Wi-Fi/cellular signals) to create unique fingerprints for each parking **LEVEL/FLOOR**. The app learns locations and can identify which floor you parked on with high confidence using cosine similarity matching.
+
+**Key Differentiator:** Identifies parking **LEVEL** (P1, P2, P3, B1, B2), not individual spot numbers. This is environmental fingerprinting, not GPS-based.
 
 **Key Features:**
 - 📍 Detect parking level via sensor fingerprinting
 - 💾 Save detected levels with one tap
-- 🔄 Return to car: Shows similarity scores to find your exact spot
+- 🔄 Return to car: Shows which floor your car is on
 - 🌐 Works without internet (offline-first)
 - 📦 Cross-platform: Windows, macOS, iOS, Android
 
@@ -168,10 +170,12 @@ ShowMeWhere/
 
 ## 🐛 Known Issues & Limitations
 
-| Issue | Status | Notes |
-|-------|--------|-------|
-| iOS Wi-Fi/BLE access | ❌ Restricted | Requires special entitlements; using accelerometer + compass instead |
-| Android SQLite (2.1.x) | ⚠️ Warning | Non-blocking vulnerability on Android; Windows/iOS use 3.50.3 |
+| Issue | Status | Explanation |
+|-------|--------|-------------|
+| iOS Wi-Fi/SSID access | ❌ Apple-restricted | Privacy policy: Apple blocks Wi-Fi SSID scanning to prevent location tracking. App uses accel+compass+barometer instead (~80-85% accuracy) |
+| iOS Cellular tower access | ❌ Apple-restricted | Privacy policy: Apple blocks tower triangulation to prevent covert location tracking. Fallback to accelerometer+compass |
+| iOS Bluetooth scanning | ⚠️ Limited | Apple restricts BLE RSSI scanning. Would require special entitlements (rarely approved) |
+| Android SQLite (2.1.x) | ⚠️ Warning | Non-blocking vulnerability on Android variant; Windows/iOS use 3.50.3 |
 | Database migration | ✅ Fixed | Uses `CreateTableAsync(CreateFlags.None)` for non-destructive evolution |
 
 ## 📈 Performance
